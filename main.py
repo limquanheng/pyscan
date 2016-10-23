@@ -29,7 +29,7 @@ import socket
 
 #Method for 1)
 def uniqueIP():
-    resultSet = set()
+    resultSet = []
     cwd = os.getcwd()
     for root, dirs, files in os.walk(cwd):
         for file in files:
@@ -39,10 +39,10 @@ def uniqueIP():
                     f = f.readlines()
                 for line in f:
                     ip = re.findall(r'[0-9]{1,3}(?:\.[0-9]{1,3}){3}', line[33:])
-                    if valid_ip(ip):
-                        resultSet.update(ip)
-                print('Processing done.')
-                writeSetToFile("IP_List", sorted(resultSet))
+                    for a in ip:
+                        if valid_ip(a):
+                            resultSet.append(str(a))
+                writeSetToFile("IP_List", sorted(list(set(resultSet))))
 
 #Method for 2)
 def uniqueIPCountry():
@@ -130,21 +130,22 @@ def activityPerAddress():
                     'Processing done. Writing will begin. Do not modify or open files while generation is in progress.')
                 for line in f:
                     ip = re.findall(r'[0-9]{1,3}(?:\.[0-9]{1,3}){3}', line[33:])
-                    if valid_ip(ip):
-                        fileName = ip[0] + ".txt"
-                        try:
-                            file = open(fileName, 'a', encoding='utf-8')
-                            file.write("%s\n" % line)
-                            file.close()
-                        except:
-                            print("Error occured! Process did not complete")
-                            sys.exit(0)
+                    for a in ip:
+                        if valid_ip(a):
+                            fileName = a + ".txt"
+                            try:
+                                file = open(fileName, 'a', encoding='utf-8')
+                                file.write("%s\n" % line)
+                                file.close()
+                            except:
+                                print("Error occured! Process did not complete")
+                                sys.exit(0)
 
 # Method for 4). Write to file integrated
 # detect SQLi with found entries to flat text file
 def sqli():
     cwd = os.getcwd()
-    root = xml.etree.ElementTree.parse('data/default_filter.xml').getroot()
+    root = xml.etree.ElementTree.parse('data/default_filter_fixed.xml').getroot()
     filename= "SQLi_detection.txt"
     fileWrite = open(filename, 'a', encoding='utf-8')
 
@@ -156,10 +157,10 @@ def sqli():
             #print(tag.text)
             #print(tag.tag)
             if tag.text == "sqli":
-                print("found")
                 containsSQLI = 1
         if containsSQLI==1:
             regex = filter.find('rule')
+            #print(regex)
             description = filter.find('description')
             try:
                 fileWrite.write("%s\n\n" % description.text + "\n\n")
@@ -172,7 +173,7 @@ def sqli():
                         with open(file) as f:
                             f = f.readlines()
                         for line in f:
-                            if re.match(re.compile(regex.text), line):
+                            if re.search(re.compile(regex.text), line):
                                 try:
                                     fileWrite.write("%s\n" % line)
                                 except Exception as e:
@@ -223,7 +224,7 @@ def rfi():
                         with open(file) as f:
                             f = f.readlines()
                         for line in f:
-                            if re.match(re.compile(regex.text), line):
+                            if re.search(re.compile(regex.text),line):
                                 try:
                                     fileWrite.write("%s\n" % line)
                                 except Exception as e:
@@ -262,7 +263,7 @@ def wsd():
                     with open(file) as f:
                         f = f.readlines()
                     for line in f:
-                        if c_reg.search(line):
+                        if re.search(c_reg, line):
                             try:
                                 fileWrite.write("%s\n" % line)
                             except Exception as e:
@@ -310,7 +311,8 @@ def valid_ip(address):
     try:
         socket.inet_aton(address)
         return True
-    except:
+    except Exception as e:
+        print(e)
         return False
 
 #Menu

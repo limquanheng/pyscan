@@ -726,7 +726,7 @@
         </tags>
         <impact>6</impact>
     </filter>
-  <filter>
+	<filter>
         <id>72</id>
         <rule><![CDATA[(?:(sleep\((\s*)(\d*)(\s*)\)|benchmark\((.*)\,(.*)\)))]]></rule>
         <description>Detects blind sqli tests using sleep() or benchmark().</description>
@@ -787,7 +787,7 @@
     </filter>
 	<filter>
 		<id>79</id>
-        <rule><![CDATA[(?:ft|htt)ps?.*\?+]]></rule>
+        <rule><![CDATA[(?:ft|htt)ps?.*\?+$]]></rule>
         <description>URLs with Trailing Question Mark(s)</description>
 		<tags>
             <tag>rfi</tag>
