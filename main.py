@@ -1,17 +1,3 @@
-#  -*- coding: utf-8 -*-
-#Build a python script
-#That reads apache logs (the link to the sample file provided below) line by line and returns the following information to file(s):
-#list of unique IP addresses as a flat text file
-#list of unique IP addresses with country and number of hits as a flat text file
-#list of all activity per IP address to individual flat text files per IP
-#detect SQLi with found entries to flat text file
-#detect remote file inclusion with found entries to flat text file
-#detect web shells with found entries to flat text file
-#The project will be assessed based exiting results collected manually, the quality of the code,  the number of tasks completed, and associated documentation. If the candidate is unable to complete a particular task, a brief description of why should be included when the assignment is turned in.
-#The sample file can be found at this link:
-#https://horangi.box.com/s/9dj3vl4ikzt19td7a9520t7xp4fp1km9
-#Deliverables: source code in github, developer guide, user guide.
-
 import os
 import re
 import sys
@@ -311,8 +297,7 @@ def valid_ip(address):
     try:
         socket.inet_aton(address)
         return True
-    except Exception as e:
-        print(e)
+    except:
         return False
 
 #Menu
